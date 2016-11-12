@@ -24,6 +24,7 @@
     <!-- your scripts -->
     <script src="env/config.js"></script>
     <script src="scripts/app.js"></script>
+    <script> var currentUser = window.location.search.slice(10); </script>
   </head>
   <body>
     <div id="main">
@@ -37,6 +38,11 @@
     </div>
   </form>
     <button id="send" type="submit" class="submit btn btn-default">Submit</button>
+    <button id="update" class="refresh btn btn-default">Refresh Room</button>
+    <select id="roomSelect">
+    <option value="allrooms">All Rooms</option>
+    </select>
+    <p class="user"></p> 
     </div>
     <div id="chats"></div>
   </body>

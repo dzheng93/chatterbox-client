@@ -1,10 +1,28 @@
 var app = {};
 
+var newFetch;
+var oldFetch = [];
+var roomsAvailable = {};
+
+
 app.init = function() {
 
 };
 
-
+app.findRooms = function(messArray) {
+  for (var i = 0; i < messArray.length; i++) {
+    roomsAvailable[messArray[i].roomname] = messArray[i].roomname;
+  }
+  var temp = '';
+  for (var rooms in roomsAvailable) { 
+    if (rooms === 'null' || rooms === 'undefined' || rooms === '') {
+      delete rooms;
+    } else {
+      temp = '<option value="' + rooms + '">' + rooms + '</option>';
+      $('#roomSelect').append(temp);      
+    }
+  }
+};
 
 app.send = function(message) {
 
@@ -30,13 +48,55 @@ app.dataConvert = function(str) {
 };
 
 app.renderMessage = function(message) {
-  $('#chats').append('<div class="username">' + app.dataConvert(message.updatedAt) + ' ' + message.username + ': ' + message.text + '</div>');
+  var current = $('#roomSelect').val();
+  if (current === 'allrooms') {
+    $('#chats').append('<div class="username">' + app.dataConvert(message.updatedAt) + ' ' + message.username + ': ' + message.text + '</div>');
+  } else if (message.roomname === current) {
+    $('#chats').append('<div class="username">' + app.dataConvert(message.updatedAt) + ' ' + message.username + ': ' + message.text + '</div>');
+  }
+};
+
+
+app.renderMessagepre = function(message) {
+  $('#chats').prepend('<div class="username">' + app.dataConvert(message.updatedAt) + ' ' + message.username + ': ' + message.text + '</div>');
+
+};
+
+
+
+
+app.reduceMess = function (oldMess, newMess, roomsStr) {
+  
+  if (oldMess.length === 0) {
+    oldFetch = newFetch;
+    return newMess;
+  } else {
+    var time = oldMess[0].updatedAt;
+    var user = oldMess[0].username;
+    var lastestMess = [];
+
+    for (var i = 0; i < newMess.length; i ++) {
+      if (time === newMess[i].updatedAt && user === newMess[i].username) {
+        lastestMess = newMess.slice(0, i);
+        console.log(lastestMess);
+      }
+    }
+    oldFetch = newFetch;
+    return lastestMess;
+  }
+
 };
 
 app.parseRender = function (arrChat) {
   var username, message, time;
-  for ( var i = 0; i < arrChat.results.length; i++ ) {
-    app.renderMessage(arrChat.results[i]);
+  if (oldFetch.length === 0) {
+    for ( var i = 0; i < arrChat.length; i++ ) {
+      app.renderMessage(arrChat[i]);
+    } 
+  } else {
+    for ( var i = arrChat.length - 1; i >= 0; i-- ) {
+      app.renderMessagepre(arrChat[i]);
+    }
   }
 
 
@@ -50,8 +110,10 @@ app.fetch = function() {
     data: 'order=-createdAt',
     contentType: 'application/json',
     success: function (data) {
-      app.parseRender(data);
+      newFetch = data.results;
+      app.parseRender(app.reduceMess(oldFetch, newFetch));
       console.log('chatterbox: Messages received');
+      app.findRooms(oldFetch);
     },
     error: function (data) {
       // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -79,17 +141,19 @@ app.handleUsernameClick = function() {
 
 };
 
-app.handleSubmit = function (text){ // form data from button execution.
+app.handleSubmit = function (text) { // form data from button execution.
   
   var text = $('#message').val();
 
   var message = {
-    'username': 'shawndrost',
+    'username': currentUser,
     'text': text,
-    'roomname': '4chan'
+    'roomname': 'DD'
   };
 
   app.send(message);
+  // after submitting message, delete message after.
+  $('#message').val('');
   /*data = $('input').val();
   var information = {
     'username': 'test',
@@ -100,18 +164,36 @@ app.handleSubmit = function (text){ // form data from button execution.
   app.send(information);*/
 };
 
+app.switchRooms = function(roomString) {
+  for (var i = 0; i < oldFetch.length; i++) {
+
+  }
+};
 
 $(document).ready(function() {
+  app.fetch();
   $('#main').on('click', '.username', function () {
     app.handleUsernameClick();  
+  });
+
+  $('#update').on('click', function () {
+    app.fetch();  
   });
    
   $('#send').on('click', function () {
     app.handleSubmit();
   });
-  app.fetch();
   
+  $('.user').html('Logged in as ' + '<i><strong>' + currentUser + '</strong></i>');
+  
+  $('#roomSelect').on('change', function() {
+    current = $(this).val();
+    app.fetch();
+    // $('#chats').empty();
+    //   for (var i = 0; i < oldFetch.length; i++) {
+    //     if (oldFetch[i].roomname === )
+    //   }
+  });
+
 
 });
-setInterval(app.fetch, 1500);
-setInterval(app.)
