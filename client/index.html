@@ -7,6 +7,9 @@
 
     <!-- dependencies -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
       // YOU DO NOT NEED TO EDIT THIS CODE
       if (!/(&|\?)username=/.test(window.location.search)) {
@@ -26,6 +29,14 @@
     <div id="main">
       <h1>chatterbox</h1>
       <!-- Your HTML goes here! -->
+ 
+<form>
+    <div class="form-group">
+      <label for="message">Message:</label>
+      <input type="message" class="form-control" id="message" placeholder="Enter message">
+    </div>
+    <button id="send" type="submit" class="submit btn btn-default">Submit</button>
+  </form>
     </div>
     <div id="chats"></div>
   </body>
