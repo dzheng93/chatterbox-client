@@ -1,9 +1,8 @@
 var app = {};
 
-var newFetch;
+var newFetch, current, person;
 var oldFetch = [];
 var roomsAvailable = {};
-var current, person;
 var currFriend = 'none';
 var friends = {};
 

@@ -90,11 +90,17 @@ form input[type=text] {
 }
 
 .friendslist {
-    float: left;
-    margin-left: 300px;
+    position: fixed;
+    margin-left: 0px;
     margin-top: 150px;
     background-color: white;
     width: 220px;
     height: 800px;
     border-radius: 10px;
+}
+
+.username {
+    border-radius: 5px;
+    overflow: scroll;
+
 }
