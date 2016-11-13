@@ -1,18 +1,19 @@
 body {
-    background: #eee;
+    background-color: black;
     text-align: center;
     padding: 0 25px;
     font-family: arial, sans-serif;
 }
 
 #main, #chats {
-    width: 600px;
+    width: 800px;
     margin: auto;
     text-align: left;
-    background: white;
+    background: #D3D3D3;
     padding: 20px 60px;
     border: solid #ddd;
     border-width: 0 1px 1px 1px;
+    border-radius: 5px;
 }
 
 #main h1 {
@@ -88,3 +89,12 @@ form input[type=text] {
     background-color: #0090da;
 }
 
+.friendslist {
+    float: left;
+    margin-left: 300px;
+    margin-top: 150px;
+    background-color: white;
+    width: 220px;
+    height: 800px;
+    border-radius: 10px;
+}

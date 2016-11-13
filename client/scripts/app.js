@@ -4,6 +4,7 @@ var newFetch;
 var oldFetch = [];
 var roomsAvailable = {};
 var current, person;
+var currFriend = 'none';
 var friends = {};
 
 
@@ -63,15 +64,27 @@ app.dataConvert = function(str) {
 };*/
 
 
-app.renderMessagepre = function(message) {
+app.renderMessage = function(message) {
   //$('#chats').prepend('<div class="username">' + app.dataConvert(message.updatedAt) + ' ' + message.username + ': ' + message.text + '</div>');
   current = $('#roomSelect').val();
 
-  if (current === 'allrooms') {
-    $('#chats').prepend('<div class="username">' + app.dataConvert(message.updatedAt) + ' ' + '<span class="person">' + message.username + '</span>: ' + message.text + '</div>');
-  } else if (message.roomname === current) {
-    $('#chats').prepend('<div class="username">' + app.dataConvert(message.updatedAt) + ' ' + message.username + ': ' + message.text + '</div>');
-  }
+  if (current === 'allrooms' && currFriend === 'none') {
+    if (friends[message.username] !== undefined) {
+      $('#chats').prepend('<div class="username">' + app.dataConvert(message.updatedAt) + ' ' + '<span class="person">' + message.username + '</span>: <strong>' + message.text + '</strong></div>');
+    } else {
+      $('#chats').prepend('<div class="username">' + app.dataConvert(message.updatedAt) + ' ' + '<span class="person">' + message.username + '</span>: ' + message.text + '</div>');
+    }  
+  } else if (message.roomname === current && currFriend === 'none') {
+    if (friends[message.username] !== undefined) {
+      $('#chats').prepend('<div class="username">' + app.dataConvert(message.updatedAt) + ' ' + '<span class="person">' + message.username + '</span>: <strong>' + message.text + '</strong></div>');
+    } else {
+      $('#chats').prepend('<div class="username">' + app.dataConvert(message.updatedAt) + ' ' + '<span class="person">' + message.username + '</span>: ' + message.text + '</div>');
+    }  
+  } else if (current === 'allrooms' && currFriend === message.username) {
+    $('#chats').prepend('<div class="username">' + app.dataConvert(message.updatedAt) + ' ' + '<span class="person">' + message.username + '</span>: <strong>' + message.text + '</strong></div>');
+  } else if (message.roomname === current && currFriend === message.username) {
+    $('#chats').prepend('<div class="username">' + app.dataConvert(message.updatedAt) + ' ' + '<span class="person">' + message.username + '</span>: <strong>' + message.text + '</strong></div>');
+  } 
 };
 
 
@@ -108,7 +121,7 @@ app.parseRender = function (arrChat) {
     } 
   } else {*/
     for ( var i = arrChat.length - 1; i >= 0; i-- ) {
-      app.renderMessagepre(arrChat[i]);
+      app.renderMessage(arrChat[i]);
     }
   //}
 
@@ -163,7 +176,7 @@ app.handleSubmit = function (text) { // form data from button execution.
   var message = {
     'username': currentUser,
     'text': text,
-    'roomname': 'DD'
+    'roomname': current
   };
 
   app.send(message);
@@ -222,7 +235,17 @@ $(document).ready(function() {
     }
   });
   $('body').on('click', '.friends', function() {
-    console.log('test');
+    currFriend = $(this).text();
+    oldFetch = [];
+    $('#chats').empty();
+    app.fetch();
+  });
+
+  $('body').on('click', '#allusers', function() {
+    currFriend = 'none';
+    oldFetch = [];
+    $('#chats').empty();
+    app.fetch();
   });
 
 });
